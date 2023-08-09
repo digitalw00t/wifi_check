@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
+# program: wifi_check.py
+# purpose: 
 
 import os
 import time
 import subprocess
 import argparse
+from datetime import datetime
+
+__VERSION__ = "v1.0.0"
 
 def restart_wlan0():
     subprocess.run(["nmcli", "radio", "wifi", "off"])
@@ -21,6 +26,10 @@ def check_ping(default_gateway):
     response = os.system(f"ping -c 1 -W 3 {default_gateway} > /dev/null 2>&1")
     return response == 0
 
+def print_message(message):
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{current_time}] {message}")
+
 def main():
     parser = argparse.ArgumentParser(description="Check WiFi status and optionally force restart.")
     parser.add_argument("--force", action="store_true", help="Force restart wlan0")
@@ -28,19 +37,20 @@ def main():
 
     default_gateway = get_default_gateway()
     if default_gateway is None:
-        print("Unable to determine the default gateway.")
+        print_message("Unable to determine the default gateway.")
         return
 
     if args.force:
+        print_message("Forcing restart of wlan0...")
         restart_wlan0()
-        print("wlan0 restarted.")
+        print_message("wlan0 restarted.")
         return
 
     while True:
         if not check_ping(default_gateway):
-            print("Default gateway is unreachable.")
+            print_message("Default gateway is unreachable. Restarting wlan0...")
             restart_wlan0()
-            print("wlan0 restarted.")
+            print_message("wlan0 restarted.")
         time.sleep(15)
 
 
