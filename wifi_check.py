@@ -8,7 +8,7 @@ import subprocess
 import argparse
 from datetime import datetime
 
-__VERSION__ = "v1.1.0"
+__VERSION__ = "v1.2.0"
 
 def restart_wlan0():
     subprocess.run(["nmcli", "radio", "wifi", "off"])
