@@ -8,7 +8,7 @@ import subprocess
 import argparse
 from datetime import datetime
 
-__VERSION__ = "v1.0.0"
+__VERSION__ = "v1.1.0"
 
 def restart_wlan0():
     subprocess.run(["nmcli", "radio", "wifi", "off"])
@@ -32,7 +32,8 @@ def print_message(message):
 
 def main():
     parser = argparse.ArgumentParser(description="Check WiFi status and optionally force restart.")
-    parser.add_argument("--force", action="store_true", help="Force restart wlan0")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__VERSION__}") # Added line for --version
+
     args = parser.parse_args()
 
     default_gateway = get_default_gateway()
